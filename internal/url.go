@@ -2,7 +2,7 @@ package internal
 
 import "strings"
 
-func repoHttpUrl(url string) string {
+func makeRepoUrl(url string) string {
 
 	if !strings.Contains(url, "http") {
 		url = "https://" + url

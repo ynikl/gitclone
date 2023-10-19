@@ -8,6 +8,10 @@ func Do(url string) error {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	srcUrl := repoHttpUrl(url)
+	log.Println("dstPath: ", dstPath)
+
+	srcUrl := makeRepoUrl(url)
+	log.Println("srcUrl: ", srcUrl)
+
 	return doCmd(srcUrl, dstPath)
 }

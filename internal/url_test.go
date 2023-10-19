@@ -19,7 +19,7 @@ func Test_repoHttpUrl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := repoHttpUrl(tt.args.url); got != tt.want {
+			if got := makeRepoUrl(tt.args.url); got != tt.want {
 				t.Errorf("repoHttpUrl() = %v, want %v", got, tt.want)
 			}
 		})
