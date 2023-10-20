@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
-	"sync/atomic"
 	"time"
 )
 
@@ -13,10 +12,9 @@ func doCmd(url, dstPath string) error {
 	cmd := exec.Command("git", "clone", url, dstPath)
 	log.Println(cmd.String())
 
-	value := &atomic.Value{}
-	value.Store(int64(0))
+	done := make(chan struct{})
 	go func() {
-		defer func() { value.Store(int64(1)) }()
+		defer func() { close(done) }()
 
 		output, err := cmd.CombinedOutput()
 		log.Println(string(output))
@@ -25,17 +23,20 @@ func doCmd(url, dstPath string) error {
 		}
 	}()
 
-	showDoingAnimation(value)
-	log.Println("done, enjoy!")
-
-	return nil
+	for {
+		select {
+		default:
+			showDoingAnimation()
+		case _ = <-done:
+			log.Println("done, enjoy!")
+			return nil
+		}
+	}
 }
 
-func showDoingAnimation(value *atomic.Value) {
-	for value.Load().(int64) == 0 {
-		for _, r := range `-\|/` {
-			fmt.Printf("\r%c", r)
-			time.Sleep(100 * time.Millisecond)
-		}
+func showDoingAnimation() {
+	for _, r := range `-\|/` {
+		fmt.Printf("\r%c", r)
+		time.Sleep(100 * time.Millisecond)
 	}
 }
