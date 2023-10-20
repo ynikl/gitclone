@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -17,7 +18,7 @@ func doCmd(url, dstPath string) error {
 		defer func() { close(done) }()
 
 		output, err := cmd.CombinedOutput()
-		log.Println(string(output))
+		log.Println(strings.TrimSpace(string(output)))
 		if err != nil {
 			panic(err)
 		}
